@@ -1,0 +1,351 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node
+{
+    struct node *prev;
+    int data;
+    struct node *next;
+};
+
+struct node *start=NULL;
+
+struct node *createnode()
+{
+    struct node *n;
+    n=(struct node*) malloc (sizeof(struct node));
+    return n;
+}
+
+void insert(int data)
+{
+    struct node *temp,*ptr;
+    temp=createnode();
+    temp->data=data;
+    if(start==NULL)
+    {
+        start=temp;
+        temp->prev=start;
+        temp->next=start;      //temp->next=ptr;
+    }
+    else
+    {
+        ptr=start;
+        while(ptr->next!=start)
+        {
+            ptr=ptr->next;
+        }
+        temp->prev=ptr;
+        ptr->next=temp;
+        temp->next=start;
+        start->prev=temp;
+    }
+}
+
+void insertatbeg(int data)
+{
+    struct node *temp,*ptr,*last;
+    temp=createnode();
+    temp->data=data;
+    if(start==NULL)
+    {
+        start=temp;
+        temp->next=start;
+        temp->prev=start;
+        printf("\nNode Inserted Successfully\n");
+    }
+    else
+    {
+        ptr=start;
+        last=start->prev;
+        
+        temp->prev=start->prev;
+        temp->next=start;
+        start->prev=temp;
+        last->next=temp;
+        start=temp;
+        printf("\nNode Inserted Successfully\n");
+    }
+}
+
+void insertatend(int data)
+{
+    if(start==NULL)
+    printf("\nList is Empty\n");
+    else
+    {
+        insert(data);
+        printf("\nNode Inserted Successfully\n");
+    }
+}
+
+void deletenum(int num)
+{
+    struct node *ptr;
+    if(start==NULL)
+    printf("\nList is Empty\n");
+    else
+    {
+        struct node *preptr,*postptr;
+        ptr=start;
+        while(ptr->data!=num)
+        {
+            ptr=ptr->next;
+        }
+        preptr=ptr->prev;
+        postptr=ptr->next;
+        preptr->next=postptr;
+        postptr->prev=preptr;
+        free(ptr);
+        printf("\nNode deleted Successfully\n");
+    }
+}
+
+void deletepos(int pos)
+{
+    if(start==NULL)
+    printf("\nList is Empty\n");
+    else
+    {
+        int i=1;
+        struct node *ptr=start;
+        while(i!=pos)
+        {
+            ptr=ptr->next;
+            i++;
+        }
+        deletenum(ptr->data);
+    }
+}
+
+void deletefirst()
+{
+    if(start==NULL)
+    printf("\nList is already Empty\n");
+    else
+    {
+        struct node *ptr=start;
+        struct node *postptr=start->next;
+        struct node *preptr=start->prev;
+        preptr->next=postptr;
+        postptr->prev=preptr;
+        start=postptr;
+        free(ptr);
+        printf("\nFirst Node Deleted Successfully\n");
+    }
+}
+
+void deletelast()
+{
+    if(start==NULL)
+    printf("\nList is already Empty\n");
+    else
+    {
+        struct node *preptr,*ptr=start;
+        while(ptr->next!=start)
+        {
+            ptr=ptr->next;
+        }
+        preptr=ptr->prev;
+        
+        preptr->next=start;
+        start->prev=preptr;
+        free(ptr);
+        printf("\nLast Node Deleted Successfully\n");
+    }
+}
+
+void insertafter(int num,int data)
+{
+    if(start==NULL)
+    printf("\nList is Empty\n");
+    else
+    {
+        struct node *temp,*postptr,*ptr=start;
+        temp=createnode();
+        temp->data=data;
+        while(ptr->data!=num)
+        {
+            ptr=ptr->next;
+        }
+        postptr=ptr->next;
+        
+        temp->next=postptr;
+        postptr->prev=temp;
+        temp->prev=ptr;
+        ptr->next=temp;
+        
+        printf("\nNode Inserted Successfully\n");
+    }
+}
+
+void insertbefore(int num,int data)
+{
+    if(start==NULL)
+    {
+        printf("\nList is Empty\n");
+    }
+    else
+    {
+        struct node *ptr=start;
+        while(ptr->data!=num)
+        {
+            ptr=ptr->next;
+        }
+        struct node *preptr=ptr->prev;
+        insertafter(preptr->data,data);
+    }
+}
+
+void sortlist()
+{
+    struct node *ptr,*postptr;
+    int temp;
+    if(start==NULL)
+    printf("\nList is Empty\n");
+    else
+    {
+        ptr=start;
+        temp=ptr->data;
+        while(ptr->next!=start)
+        {
+            postptr=ptr->next;
+            while(postptr->data!=start->data)
+            {
+                if(temp > postptr->data)
+                {
+                    postptr->data=temp;
+                }
+                postptr=postptr->next;
+                temp=ptr->next->data;
+            }
+            ptr=ptr->next;
+        }
+    }
+}
+
+void traverse()
+{
+    struct node *ptr;
+    if(start==NULL)
+    printf("\nList is Empty\n");
+    else
+    {
+        printf("The elements in the list are : \n");
+        ptr=start;
+        while(ptr->next!=start)
+        {
+            printf("%d\n",ptr->data);
+            ptr=ptr->next;
+        }
+        printf("%d\n",ptr->data);
+    }
+}
+
+int main()
+{
+    int chc=0;
+    while(chc!=12)
+    {
+        printf("\n\t\t---------- DOUBLY CIRCULAR LINKED LIST ----------");
+        printf("\n1)Insert\n2)Insert at Beginning\n3)Insert at End\n4)Delete a number\n5)Delete a position\n6)Delete First Node\n7)Delete Last Node\n8)Insert After\n9)Insert Before\n10)Sort the present list\n11)Traverse\n12)Exit\n");
+        printf("\nYour choice : ");
+        scanf("%d",&chc);
+        switch (chc)
+        {
+            case 1:
+            {
+                int n,num,i;
+                printf("Limit : ");
+                scanf("%d",&n);
+                for(i=0;i<n;i++)
+                {
+                    printf("Enter Element %d : ",i+1);
+                    scanf("%d",&num);
+                    insert(num);
+                }
+                printf("\nAll Nodes Inserted successfully\n");
+                break;
+            }
+            case 2:
+            {
+                int beg;
+                printf("Enter the number : ");
+                scanf("%d",&beg);
+                insertatbeg(beg);
+                break;
+            }
+            case 3:
+            {
+                int lst;
+                printf("Enter the number : ");
+                scanf("%d",&lst);
+                insertatend(lst);
+                break;
+            }
+            case 4:
+            {
+                int del;
+                printf("Enter the number : ");
+                scanf("%d",&del);
+                deletenum(del);
+                break;
+            }
+            case 5:
+            {
+                int pos;
+                printf("Enter a position : ");
+                scanf("%d",&pos);
+                deletepos(pos);
+                break;
+            }
+            case 6:
+            {
+                deletefirst();
+                break;
+            }
+            case 7:
+            {
+                deletelast();
+                break;
+            }
+            case 8:
+            {
+                int num,num2;
+                printf("Enter after which number you want to insert data : ");
+                scanf("%d",&num);
+                printf("Enter the number : ");
+                scanf("%d",&num2);
+                insertafter(num,num2);
+                break;
+            }
+            case 9:
+            {
+                int bef,num5;
+                printf("Enter before which number you want to insert data : ");
+                scanf("%d",&bef);
+                printf("Enter the number : ");
+                scanf("%d",&num5);
+                insertbefore(bef,num5);
+                break;
+            }
+            case 10:
+            {
+                sortlist();
+                printf("\nList has been sorted in ascending order\n");
+                break;
+            }
+            case 11:
+            {
+                traverse();
+                break;
+            }
+            case 12:
+            break;
+            
+            default:
+            printf("\n\t\t---------- Wrong Input ----------\n\t\t  ---------- Try Again ----------");
+        }
+    }
+    return 0;
+}
